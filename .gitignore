@@ -1,3 +1,4 @@
 aws
-terraform
-.terraform
+terraform*
+.terraform/*
+.*

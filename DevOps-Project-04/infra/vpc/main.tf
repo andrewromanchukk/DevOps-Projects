@@ -18,7 +18,7 @@ resource "aws_internet_gateway" "my_igw" {
   }
 }
 
-#NAT
+# ## NAT
 # resource "aws_eip" "nat" {
 #   domain = "vpc"
 # }

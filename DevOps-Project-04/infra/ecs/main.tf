@@ -87,8 +87,8 @@ resource "aws_autoscaling_group" "ecs_asg" {
 
 ## Capacity Provider (connect ASG to ECS)
 
-resource "aws_ecs_capacity_provider" "asg_connect_to_ecs" {
-  name = "ecs-asg-provider"
+resource "aws_ecs_capacity_provider" "my_capacity_provider" {
+  name = "my-ecs-asg-provider"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.ecs_asg.arn
@@ -104,7 +104,7 @@ resource "aws_ecs_cluster_capacity_providers" "example" {
   cluster_name = aws_ecs_cluster.my_first_ecs_cluster.name
 
   capacity_providers = [
-    aws_ecs_capacity_provider.asg_connect_to_ecs.name
+    aws_ecs_capacity_provider.my_capacity_provider.name
   ]
 }
 
@@ -117,12 +117,12 @@ resource "aws_ecs_task_definition" "task_app" {
 
   container_definitions = jsonencode([
     {
-      name  = "app"
-      image = "nginx"
+      name  = "django-app"
+      image = "048266892098.dkr.ecr.eu-central-1.amazonaws.com/django-hujango"
       cpu   = 128
       memory = 256
       portMappings = [{
-        containerPort = 80
+        containerPort = 8000
         hostPort      = 80
       }]
     },
@@ -145,7 +145,7 @@ resource "aws_ecs_service" "ecs_service_app" {
   desired_count   = 2
 
   capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.asg_connect_to_ecs.name
+    capacity_provider = aws_ecs_capacity_provider.my_capacity_provider.name
     weight            = 1
   }
 }
